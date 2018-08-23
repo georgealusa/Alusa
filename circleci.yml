@@ -1,0 +1,14 @@
+machine:
+node:
+version: 10.1.0
+services:
+- docker
+  version: 1.13.1
+
+dependencies:
+post:
+- docker build -t 2cbb3c582804:$CIRCLE_SHA1 .
+test:
+post:
+- docker run -d -p 4200:4200 2cbb3c582804:$CIRCLE_SHA1; sleep 10
+- curl --retry 10 --retry-delay 5 4200:4200 | grep "Hello world"
